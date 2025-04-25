@@ -1,4 +1,5 @@
 import { Property } from "csstype";
+import { motion, useAnimation } from "framer-motion";
 import {
   CSSProperties,
   forwardRef,
@@ -12,7 +13,7 @@ import {
 import { DiceContext } from "../context/DiceContext";
 import { Face } from "../types/types";
 import { getRandomDieValue, parseSizeToPixels } from "../util/functions";
-import { useKeyboardRoller } from "../hooks/hooks";
+import { useKeyboardRoller } from "../util/hooks";
 
 export const Die = forwardRef(
   (
@@ -43,18 +44,32 @@ export const Die = forwardRef(
     const { registerDie, unregisterDie } = useContext(DiceContext);
 
     const toggleSave = () => setFreeze(!freeze);
-    const roll = (): Promise<Face> => {
-      if (freeze || rolling) return new Promise((resolve) => resolve(value));
+    const controls = useAnimation();
+    const roll = async (): Promise<Face> => {
+      if (freeze || rolling) return value;
+      const rollValue = getRandomDieValue();
+      const orientation = sides[value - 1]!.show;
+      const getRotationArray = (axis: `x` | `y`) => [
+        orientation[axis],
+        360 + orientation.x,
+        720 + sides[rollValue - 1]!.show[axis],
+      ];
       setRolling(true);
-      return new Promise((resolve) => {
-        setTimeout(() => {
-          const rollValue = getRandomDieValue();
-          setRolling(false);
-          setValue(rollValue);
-          onRoll?.(rollValue);
-          resolve(rollValue);
-        }, 750);
-      });
+      await controls.start(
+        {
+          rotateX: getRotationArray(`x`),
+          rotateY: getRotationArray(`y`),
+        },
+        {
+          duration: 2,
+          ease: "linear",
+          times: [0, 0.5, 1],
+        },
+      );
+      setRolling(false);
+      setValue(rollValue);
+      onRoll?.(rollValue);
+      return rollValue;
     };
 
     useKeyboardRoller(keyboardListeners, roll);
@@ -72,32 +87,56 @@ export const Die = forwardRef(
 
     const translateZ = `${parseSizeToPixels(size) / (typeof size == `string` && size.includes(`%`) ? 4 : 2)}px`;
 
+    console.log(value);
+
     const sides = [
-      { pips: [0, 1, 0], sidePlacement: ``, show: `` },
+      {
+        pips: [0, 1, 0],
+        sidePlacement: ``,
+        show: {
+          x: 0,
+          y: 0,
+        },
+      },
       {
         pips: [1, 0, 1],
         sidePlacement: rotate(`X`, -90),
-        show: rotate(`X`, 90),
+        show: {
+          x: 90,
+          y: 0,
+        },
       },
       {
         pips: [1, 1, 1],
         sidePlacement: rotate(`Y`, -90),
-        show: rotate(`Y`, 90),
+        show: {
+          x: 0,
+          y: 90,
+        },
       },
       {
         pips: [2, 0, 2],
         sidePlacement: rotate(`Y`, 90),
-        show: rotate(`Y`, -90),
+        show: {
+          x: 0,
+          y: -90,
+        },
       },
       {
         pips: [2, 1, 2],
         sidePlacement: rotate(`X`, 90),
-        show: rotate(`X`, -90),
+        show: {
+          x: -90,
+          y: 0,
+        },
       },
       {
         pips: [2, 2, 2],
         sidePlacement: rotate(`Y`, 180),
-        show: rotate(`Y`, 180),
+        show: {
+          x: 0,
+          y: 180,
+        },
       },
     ];
 
@@ -114,46 +153,69 @@ export const Die = forwardRef(
             height: size,
             width: size,
             aspectRatio: 1,
-            perspective: 10000,
+            perspective: 1000,
             position: `relative`,
             display: `flex`,
             alignItems: `center`,
             justifyContent: `center`,
           }}
         >
-          <div
+          <motion.div
+            animate={controls}
             style={{
               transformStyle: `preserve-3d`,
-              transform: sides[value - 1]!.show,
-              transition: `all 1s linear`,
+              height: `100%`,
+              width: `100%`,
+              position: `relative`,
             }}
-            className={`w-full h-full relative ${rolling ? `animate-roll` : ``}`}
           >
-            {sides.map(({ pips, sidePlacement }, i) => {
+            {(sides ?? []).map(({ pips, sidePlacement }, i) => {
               return (
                 <div
                   key={i}
                   style={{
                     transform: `${sidePlacement} translateZ(${translateZ})`,
+                    display: `flex`,
+                    flexDirection: `column`,
+                    alignItems: `center`,
+                    justifyContent: `center`,
+                    height: `100%`,
+                    width: `100%`,
+                    position: `absolute`,
+                    background: freeze ? `red` : `black`,
+                    border: `1px solid white`,
+                    boxSizing: `border-box`,
+                    padding: `15%`,
                   }}
-                  className={`flex flex-col items-center justify-center h-full w-full ${freeze ? `bg-red-400` : `bg-black`} absolute border p-2`}
                 >
-                  {pips.map((rowPips, i) => {
+                  {(pips ?? []).map((rowPips, i) => {
                     return (
                       <div
+                        style={{
+                          height: `33%`,
+                          width: `100%`,
+                          display: `flex`,
+                          alignItems:
+                            i == 0 ? `start` : i == 1 ? `center` : `end`,
+                          justifyContent:
+                            i == 0 && rowPips > 1
+                              ? `space-between`
+                              : i == 1 && rowPips < 2
+                                ? `center`
+                                : i == 2 && rowPips < 2
+                                  ? `end`
+                                  : `space-between`,
+                        }}
                         key={i}
-                        className={`h-1/3 w-full flex items-center ${
-                          i == 0 && rowPips > 1
-                            ? `justify-between`
-                            : i == 1 && rowPips < 2
-                              ? `justify-center`
-                              : i == 2 && rowPips < 2
-                                ? `justify-end`
-                                : `justify-between`
-                        }`}
                       >
                         {[...Array(rowPips)].map((_, i) => (
                           <span
+                            style={{
+                              height: `75%`,
+                              backgroundColor: `white`,
+                              aspectRatio: 1,
+                              borderRadius: `50%`,
+                            }}
                             key={i}
                             className={`h-2/3  bg-white aspect-square rounded-full`}
                           />
@@ -164,7 +226,7 @@ export const Die = forwardRef(
                 </div>
               );
             })}
-          </div>
+          </motion.div>
         </div>
         {Roller && Roller(roll)}
       </div>

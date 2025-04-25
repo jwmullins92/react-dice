@@ -1,6 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-  content: ["./index.html", "./frontend/**/*.{js,ts,jsx,tsx}"],
+  content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
     extend: {
       keyframes: {
@@ -10,7 +10,7 @@ export default {
         },
       },
       animation: {
-        roll: "roll .75s linear infinite",
+        roll: "roll .75s ease-in-out infinite",
       },
     },
   },

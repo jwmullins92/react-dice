@@ -13,7 +13,7 @@ import {
 
 import { DiceContext, RollGroupResult } from "../context/DiceContext";
 import { Die } from "./Die";
-import { useKeyboardRoller } from "../hooks/hooks";
+import { useKeyboardRoller } from "../util/hooks";
 
 type DieProps = ComponentProps<typeof Die>;
 export const DiceGroup = forwardRef(

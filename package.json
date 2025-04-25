@@ -9,15 +9,11 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsc",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "tailwindcss -i ./src/index.css -o ./dist/index.css --minify && rollup -c",
+    "test": "npm run build && yalc publish"
   },
   "author": "Jared Mullins",
   "license": "ISC",
-  "peerDependencies": {
-    "react": "^18.0.0",
-    "react-dom": "^18.0.0"
-  },
   "keywords": [
     "react",
     "dice",
@@ -29,16 +25,20 @@
     "@rollup/plugin-commonjs": "^28.0.3",
     "@rollup/plugin-node-resolve": "^16.0.1",
     "@rollup/plugin-typescript": "^12.1.2",
-    "@types/node": "^22.14.1",
+    "@types/node": "^22.15.2",
     "@types/react": "^19.1.2",
     "@types/react-dom": "^19.1.2",
+    "autoprefixer": "^10.4.21",
+    "postcss": "^8.5.3",
     "prettier": "^3.5.3",
-    "react": "^19.1.0",
-    "react-dom": "^19.1.0",
     "rollup": "^4.40.0",
     "rollup-plugin-dts": "^6.2.1",
-    "tailwind": "^4.0.0",
+    "rollup-plugin-postcss": "^4.0.2",
+    "tailwindcss": "^3.4.17",
     "tslib": "^2.8.1",
     "typescript": "^5.8.3"
+  },
+  "dependencies": {
+    "framer-motion": "^12.9.2"
   }
 }
