@@ -14,6 +14,7 @@ import { DiceContext } from "../context/DiceContext";
 import { Face } from "../types/types";
 import { getRandomDieValue, parseSizeToPixels } from "../util/functions";
 import { useKeyboardRoller } from "../util/hooks";
+import { diceThemes, sides, Theme } from "../util/dieHelpers";
 
 export const Die = forwardRef(
   (
@@ -26,6 +27,8 @@ export const Die = forwardRef(
       keyboardListeners = [],
       onClick,
       initialValue,
+      rollDuration = 1,
+      theme = `black`,
     }: {
       id?: string;
       size?: Property.Width<string | number>;
@@ -35,6 +38,8 @@ export const Die = forwardRef(
       keyboardListeners?: string[];
       onClick?: (roll: () => void) => void;
       initialValue?: Face;
+      rollDuration?: number;
+      theme?: Theme;
     },
     ref,
   ) => {
@@ -42,6 +47,8 @@ export const Die = forwardRef(
     const [rolling, setRolling] = useState(false);
     const [freeze, setFreeze] = useState(false);
     const { registerDie, unregisterDie } = useContext(DiceContext);
+
+    const dieTheme = diceThemes[theme];
 
     const toggleSave = () => setFreeze(!freeze);
     const controls = useAnimation();
@@ -61,8 +68,8 @@ export const Die = forwardRef(
           rotateY: getRotationArray(`y`),
         },
         {
-          duration: 2,
-          ease: "linear",
+          duration: rollDuration,
+          ease: [`easeIn`, `easeOut`],
           times: [0, 0.5, 1],
         },
       );
@@ -82,66 +89,20 @@ export const Die = forwardRef(
     }, [id, freeze]);
 
     useImperativeHandle(ref, () => ({ roll, toggleSave }));
-    const rotate = (axis: `X` | `Y`, degrees: number) =>
-      `rotate${axis}(${degrees}deg)`;
 
-    const translateZ = `${parseSizeToPixels(size) / (typeof size == `string` && size.includes(`%`) ? 4 : 2)}px`;
-
-    console.log(value);
-
-    const sides = [
-      {
-        pips: [0, 1, 0],
-        sidePlacement: ``,
-        show: {
-          x: 0,
-          y: 0,
-        },
-      },
-      {
-        pips: [1, 0, 1],
-        sidePlacement: rotate(`X`, -90),
-        show: {
-          x: 90,
-          y: 0,
-        },
-      },
-      {
-        pips: [1, 1, 1],
-        sidePlacement: rotate(`Y`, -90),
-        show: {
-          x: 0,
-          y: 90,
-        },
-      },
-      {
-        pips: [2, 0, 2],
-        sidePlacement: rotate(`Y`, 90),
-        show: {
-          x: 0,
-          y: -90,
-        },
-      },
-      {
-        pips: [2, 1, 2],
-        sidePlacement: rotate(`X`, 90),
-        show: {
-          x: -90,
-          y: 0,
-        },
-      },
-      {
-        pips: [2, 2, 2],
-        sidePlacement: rotate(`Y`, 180),
-        show: {
-          x: 0,
-          y: 180,
-        },
-      },
-    ];
-
+    const translateZ =
+      parseSizeToPixels(size) /
+      (typeof size == `string` && size.includes(`%`) ? 4 : 2);
     return (
-      <div style={containerStyle}>
+      <div
+        style={{
+          boxSizing: `border-box`,
+          width: size,
+          height: size,
+          aspectRatio: 1,
+          ...containerStyle,
+        }}
+      >
         <div
           onClick={() => {
             if (!rolling) {
@@ -150,9 +111,9 @@ export const Die = forwardRef(
             }
           }}
           style={{
-            height: size,
-            width: size,
-            aspectRatio: 1,
+            height: `100%`,
+            width: `100%`,
+
             perspective: 1000,
             position: `relative`,
             display: `flex`,
@@ -169,12 +130,12 @@ export const Die = forwardRef(
               position: `relative`,
             }}
           >
-            {(sides ?? []).map(({ pips, sidePlacement }, i) => {
+            {sides.map(({ pips, sidePlacement }, i) => {
               return (
                 <div
                   key={i}
                   style={{
-                    transform: `${sidePlacement} translateZ(${translateZ})`,
+                    transform: `${sidePlacement} translateZ(${rolling || value == i + 1 ? translateZ : translateZ * 0.8}px)`,
                     display: `flex`,
                     flexDirection: `column`,
                     alignItems: `center`,
@@ -182,13 +143,15 @@ export const Die = forwardRef(
                     height: `100%`,
                     width: `100%`,
                     position: `absolute`,
-                    background: freeze ? `red` : `black`,
-                    border: `1px solid white`,
+                    border: dieTheme.face?.border,
+                    borderRadius: `5%`,
                     boxSizing: `border-box`,
                     padding: `15%`,
+                    ...dieTheme.face,
+                    background: freeze ? `red` : dieTheme.face?.background,
                   }}
                 >
-                  {(pips ?? []).map((rowPips, i) => {
+                  {pips.map((rowPips, i) => {
                     return (
                       <div
                         style={{
@@ -212,9 +175,9 @@ export const Die = forwardRef(
                           <span
                             style={{
                               height: `75%`,
-                              backgroundColor: `white`,
                               aspectRatio: 1,
                               borderRadius: `50%`,
+                              ...dieTheme.pips,
                             }}
                             key={i}
                             className={`h-2/3  bg-white aspect-square rounded-full`}

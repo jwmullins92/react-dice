@@ -19,7 +19,7 @@ type DieProps = ComponentProps<typeof Die>;
 export const DiceGroup = forwardRef(
   (
     {
-      diceCount,
+      diceCount = 0,
       diceSize = `50px`,
       containerStyle,
       diceAndRollerContainerStyle,
@@ -28,6 +28,7 @@ export const DiceGroup = forwardRef(
       Roller,
       onRollGroup,
       keyboardListeners = [],
+      rollDuration,
     }: {
       diceCount?: number;
       containerStyle?: CSSProperties;
@@ -38,6 +39,7 @@ export const DiceGroup = forwardRef(
       Roller?: (roll: () => void) => ReactElement;
       onRollGroup?: (result: RollGroupResult) => void;
       keyboardListeners?: string[];
+      rollDuration?: number;
     },
     ref,
   ) => {
@@ -45,7 +47,9 @@ export const DiceGroup = forwardRef(
       ? Array.isArray(children)
         ? children
         : [children]
-      : [...Array(diceCount).keys()].map(() => <Die size={diceSize} />);
+      : [...Array(diceCount).keys()].map(() => (
+          <Die size={diceSize} {...{ rollDuration }} />
+        ));
     const { addGroup, getGroup } = useContext(DiceContext);
     const [diceComponents, setDiceComponents] = useState<ReactElement[]>([]);
     const roll = useRef<() => Promise<RollGroupResult>>(undefined);
@@ -72,11 +76,13 @@ export const DiceGroup = forwardRef(
         <div
           style={{
             display: `flex`,
-            columnGap: 10,
+            columnGap: 50,
             ...containerStyle,
           }}
         >
-          {diceComponents.map((die) => die)}
+          {diceComponents.map((die) => {
+            return die;
+          })}
         </div>
         {Roller &&
           Roller(async () => {
