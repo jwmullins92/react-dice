@@ -1,5 +1,5 @@
 import { Property } from "csstype";
-import { motion, useAnimation } from "framer-motion";
+import { AnimatePresence, motion, useAnimation } from "framer-motion";
 import {
   CSSProperties,
   forwardRef,
@@ -12,9 +12,9 @@ import {
 
 import { DiceContext } from "../context/DiceContext";
 import { Face } from "../types/types";
+import { diceThemes, gradients, sides, Theme } from "../util/dieHelpers";
 import { getRandomDieValue, parseSizeToPixels } from "../util/functions";
 import { useKeyboardRoller } from "../util/hooks";
-import { diceThemes, sides, Theme } from "../util/dieHelpers";
 
 export const Die = forwardRef(
   (
@@ -28,7 +28,10 @@ export const Die = forwardRef(
       onClick,
       initialValue,
       rollDuration = 1,
-      theme = `black`,
+      theme = `light`,
+      faceBackground,
+      pipBackground,
+      useNumerals,
     }: {
       id?: string;
       size?: Property.Width<string | number>;
@@ -40,6 +43,9 @@ export const Die = forwardRef(
       initialValue?: Face;
       rollDuration?: number;
       theme?: Theme;
+      faceBackground?: Property.Background;
+      pipBackground?: Property.Background;
+      useNumerals?: boolean;
     },
     ref,
   ) => {
@@ -135,7 +141,7 @@ export const Die = forwardRef(
                 <div
                   key={i}
                   style={{
-                    transform: `${sidePlacement} translateZ(${rolling || value == i + 1 ? translateZ : translateZ * 0.8}px)`,
+                    transform: `${sidePlacement} translateZ(${rolling ? translateZ : value == i + 1 ? translateZ + 5 : translateZ * 0.8}px)`,
                     display: `flex`,
                     flexDirection: `column`,
                     alignItems: `center`,
@@ -148,44 +154,104 @@ export const Die = forwardRef(
                     boxSizing: `border-box`,
                     padding: `15%`,
                     ...dieTheme.face,
-                    background: freeze ? `red` : dieTheme.face?.background,
+                    background: faceBackground ?? dieTheme.face?.background,
                   }}
                 >
-                  {pips.map((rowPips, i) => {
-                    return (
-                      <div
+                  {useNumerals ? (
+                    <div
+                      style={{
+                        height: `100%`,
+                        width: `100%`,
+                        display: `flex`,
+                        alignItems: `center`,
+                        justifyContent: `center`,
+                        color: "rgba(0, 0, 0, 1)",
+                        fontSize: parseSizeToPixels(size) * 0.7,
+                        WebkitTextStroke: "1px rgba(30, 30, 30, 0.6)",
+                        position: `relative`,
+                        fontFamily: `'Rounded', sans-serif`, // Apply your bundled font here
+                        // textShadow: `-1px -1px 1px rgba(50, 50, 50, 0.8), 1px 1px 1px rgba(80, 80, 80, 0.3)`
+                      }}
+                    >
+                      <span
                         style={{
-                          height: `33%`,
-                          width: `100%`,
-                          display: `flex`,
-                          alignItems:
-                            i == 0 ? `start` : i == 1 ? `center` : `end`,
-                          justifyContent:
-                            i == 0 && rowPips > 1
-                              ? `space-between`
-                              : i == 1 && rowPips < 2
-                                ? `center`
-                                : i == 2 && rowPips < 2
-                                  ? `end`
-                                  : `space-between`,
+                          position: "relative",
+                          zIndex: 1 /* Ensure text is above pseudo-element */,
+                          background: `linear-gradient(135deg, rgb(0, 0, 0), rgb(100, 100, 100))`,
+                          WebkitBackgroundClip: "text",
+                          color: "transparent",
                         }}
-                        key={i}
                       >
-                        {[...Array(rowPips)].map((_, i) => (
-                          <span
-                            style={{
-                              height: `75%`,
-                              aspectRatio: 1,
-                              borderRadius: `50%`,
-                              ...dieTheme.pips,
-                            }}
-                            key={i}
-                            className={`h-2/3  bg-white aspect-square rounded-full`}
-                          />
-                        ))}
-                      </div>
-                    );
-                  })}
+                        {i + 1}
+                      </span>
+                    </div>
+                  ) : (
+                    pips.map((rowPips, i) => {
+                      return (
+                        <div
+                          style={{
+                            height: `33%`,
+                            width: `100%`,
+                            display: `flex`,
+                            alignItems:
+                              i == 0 ? `start` : i == 1 ? `center` : `end`,
+                            justifyContent:
+                              i == 0 && rowPips > 1
+                                ? `space-between`
+                                : i == 1 && rowPips < 2
+                                  ? `center`
+                                  : i == 2 && rowPips < 2
+                                    ? `end`
+                                    : `space-between`,
+                          }}
+                          key={i}
+                        >
+                          {[...Array(rowPips)].map((_, i) => (
+                            <span
+                              style={{
+                                height: `75%`,
+                                aspectRatio: 1,
+                                borderRadius: `50%`,
+                                ...dieTheme.pips,
+                                background:
+                                  pipBackground ?? dieTheme.pips?.background,
+                              }}
+                              key={i}
+                              className={`h-2/3  bg-white aspect-square rounded-full`}
+                            />
+                          ))}
+                        </div>
+                      );
+                    })
+                  )}
+                  <AnimatePresence>
+                    {freeze && (
+                      <motion.div
+                        initial={{
+                          opacity: 0,
+                          height: `0%`,
+                          width: `100%`,
+                        }}
+                        animate={{
+                          opacity: 0.2,
+                          height: `100%`,
+                          width: `100%`,
+                          originY: `0%`,
+                        }}
+                        style={{
+                          background: theme == `dark` ? `white` : `black`,
+                          position: `absolute`,
+                          borderRadius: `5%`,
+                        }}
+                        key="modal"
+                        exit={{
+                          opacity: 0,
+                          height: 0,
+                          width: 0,
+                        }}
+                      />
+                    )}
+                  </AnimatePresence>
                 </div>
               );
             })}

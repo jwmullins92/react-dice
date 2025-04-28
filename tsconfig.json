@@ -2,8 +2,8 @@
   "compilerOptions": {
     "lib": ["DOM", "ESNext"],
     "target": "ESNext",
-    "module": "ESNext",
-    "moduleResolution": "Node",
+    "module": "esnext",
+    "moduleResolution": "bundler",
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "strict": true,

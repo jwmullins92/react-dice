@@ -1,5 +1,6 @@
 import { Property } from "csstype";
 import {
+  cloneElement,
   ComponentProps,
   CSSProperties,
   forwardRef,
@@ -12,10 +13,12 @@ import {
 } from "react";
 
 import { DiceContext, RollGroupResult } from "../context/DiceContext";
-import { Die } from "./Die";
+import { Theme } from "../util/dieHelpers";
 import { useKeyboardRoller } from "../util/hooks";
+import { Die } from "./Die";
 
 type DieProps = ComponentProps<typeof Die>;
+
 export const DiceGroup = forwardRef(
   (
     {
@@ -29,6 +32,7 @@ export const DiceGroup = forwardRef(
       onRollGroup,
       keyboardListeners = [],
       rollDuration,
+      theme = `light`,
     }: {
       diceCount?: number;
       containerStyle?: CSSProperties;
@@ -40,27 +44,63 @@ export const DiceGroup = forwardRef(
       onRollGroup?: (result: RollGroupResult) => void;
       keyboardListeners?: string[];
       rollDuration?: number;
+      theme?: Theme;
     },
     ref,
   ) => {
-    const dice = children
-      ? Array.isArray(children)
-        ? children
-        : [children]
-      : [...Array(diceCount).keys()].map(() => (
-          <Die size={diceSize} {...{ rollDuration }} />
-        ));
+    const [rolling, setRolling] = useState(false);
+    const childArray = (Array.isArray(children) ? children : [children]).filter(
+      Boolean,
+    ) as ReactElement<DieProps>[];
+
+    const dice = (
+      children
+        ? [
+            ...childArray!.map((child) =>
+              cloneElement(child, {
+                theme,
+                rollDuration,
+                size: diceSize,
+                ...child.props,
+              }),
+            ),
+            ...(diceCount && diceCount - childArray.length > 0
+              ? [...Array(diceCount - childArray.length)].map(() => (
+                  <Die size={diceSize} {...{ rollDuration, theme }} />
+                ))
+              : []),
+          ]
+        : [...Array(diceCount).keys()].map(() => (
+            <Die size={diceSize} {...{ rollDuration, theme }} />
+          ))
+    ) as ReactElement<DieProps>[];
+
     const { addGroup, getGroup } = useContext(DiceContext);
     const [diceComponents, setDiceComponents] = useState<ReactElement[]>([]);
-    const roll = useRef<() => Promise<RollGroupResult>>(undefined);
+    const roller = useRef<() => Promise<RollGroupResult>>(() =>
+      Promise.resolve({
+        values: [],
+        sum: 0,
+        groupings: {},
+      }),
+    );
 
-    useImperativeHandle(ref, () => ({ rollGroup: roll.current }));
-    useKeyboardRoller(keyboardListeners, roll.current);
+    const roll = async () => {
+      if (!rolling) {
+        setRolling(true);
+        const rollResult = await roller.current();
+        onRollGroup?.(rollResult);
+        setRolling(false);
+      }
+    };
+
+    useImperativeHandle(ref, () => ({ rollGroup: roller.current }));
+    useKeyboardRoller(keyboardListeners, roll);
     useEffect(() => {
       if (!getGroup(groupId)) {
         const { rollGroup, diceElements } = addGroup(groupId, dice);
         setDiceComponents(diceElements);
-        roll.current = rollGroup;
+        roller.current = rollGroup;
       }
     }, [groupId, diceCount, dice]);
 
@@ -76,7 +116,7 @@ export const DiceGroup = forwardRef(
         <div
           style={{
             display: `flex`,
-            columnGap: 50,
+            columnGap: 25,
             ...containerStyle,
           }}
         >
@@ -84,13 +124,7 @@ export const DiceGroup = forwardRef(
             return die;
           })}
         </div>
-        {Roller &&
-          Roller(async () => {
-            if (roll.current) {
-              const rollResult = await roll.current();
-              onRollGroup?.(rollResult);
-            }
-          })}
+        {Roller && Roller(roll)}
       </div>
     );
   },

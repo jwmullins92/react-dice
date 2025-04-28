@@ -5,6 +5,7 @@ import commonjs from "@rollup/plugin-commonjs";
 import { fileURLToPath } from "node:url";
 import dts from "rollup-plugin-dts";
 import postcss from "rollup-plugin-postcss"; // Import the postcss plugin
+import url from "@rollup/plugin-url"; // Import the @rollup/plugin-url plugin
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -30,10 +31,18 @@ export default [
         noEmit: true,
       }),
       postcss({
+        extract: "bundle.css",
         input: "./dist/index.css",
         output: "bundle.css",
-        inject: true,
+        inject: false,
         minimize: true,
+      }),
+      url({
+        destDir: "dist/assets/fonts",
+        sourceDir: "assets/fonts",
+        include: ["**/*.woff", "**/*.woff2"], // Specify the font file extensions
+        limit: Infinity, // Don't inline as base64
+        emitFiles: true, // Ensure the font files are copied
       }),
     ],
     external: ["react", "react-dom"], // Mark react and react-dom as external
@@ -45,6 +54,6 @@ export default [
       format: "esm",
     },
     plugins: [dts()],
-    external: [/\.css$/],
+    external: [/\.css$/, /\.woff$/, /\.woff2$/],
   },
 ];

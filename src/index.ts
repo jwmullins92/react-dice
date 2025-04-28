@@ -1,4 +1,5 @@
-import "../dist/index.css";
+import "..dist/index.css";
+
 export { Die } from "./components/Die";
 export { DiceGroup } from "./components/DiceGroup";
 export { DiceProvider } from "./context/DiceProvider";

@@ -8,7 +8,6 @@ import {
   useState,
 } from "react";
 
-import { Die } from "../components/Die";
 import { DiceContext } from "./DiceContext";
 import {
   DiceGroupsContextType,
@@ -35,19 +34,17 @@ export const DiceProvider = ({ children }: { children: ReactNode }) => {
   const getDie = (id: string) => registeredDice.find((die) => die.id == id);
   const addGroup = (groupId: string, dice: ReactElement<DieProps>[]) => {
     const dieRefs: RefObject<DieHandle | null>[] = [];
-    const diceElements = dice
-      .filter((die) => die!.type == Die)
-      .map((die, i) => {
-        if (!isValidElement(die)) return null;
-        const ref = createRef<DieHandle>();
-        dieRefs.push(ref);
-        return cloneElement(die, {
-          onClick: () => ref.current?.toggleSave(),
-          key: i,
-          ...die.props,
-          ref,
-        });
-      }) as ReactElement<DieProps>[];
+    const diceElements = dice.map((die, i) => {
+      if (!isValidElement(die)) return null;
+      const ref = createRef<DieHandle>();
+      dieRefs.push(ref);
+      return cloneElement(die, {
+        onClick: () => ref.current?.toggleSave(),
+        ...die.props,
+        key: i,
+        ref,
+      });
+    }) as ReactElement<DieProps>[];
 
     const rollGroup = async () => {
       const values = await Promise.all(
