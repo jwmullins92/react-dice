@@ -169,13 +169,13 @@ export const Die = forwardRef(
                         fontSize: parseSizeToPixels(size) * 0.7,
                         WebkitTextStroke: "1px rgba(30, 30, 30, 0.6)",
                         position: `relative`,
-                        fontFamily: `'Rounded', sans-serif`, // Apply your bundled font here
+                        fontFamily: `'Rounded', sans-serif`,
                       }}
                     >
                       <span
                         style={{
                           position: "relative",
-                          zIndex: 1 /* Ensure text is above pseudo-element */,
+                          zIndex: 1,
                           background: `linear-gradient(135deg, rgb(0, 0, 0), rgb(100, 100, 100))`,
                           WebkitBackgroundClip: "text",
                           color: "transparent",

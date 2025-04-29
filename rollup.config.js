@@ -30,9 +30,9 @@ export default [
       }),
       url({
         include: ["**/*.woff", "**/*.woff2"],
-        limit: Infinity, // Already okay
+        limit: Infinity,
         emitFiles: false,
-        sourceDir: path.join(__dirname, "src"), // Important: resolve relative paths properly
+        sourceDir: path.join(__dirname, "src"),
       }),
       postcss({
         minimize: true,

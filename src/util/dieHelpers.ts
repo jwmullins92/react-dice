@@ -7,18 +7,9 @@ const rotate = (axis: `X` | `Y`, degrees: number) =>
 
 export const gradients = {
   black: {
-    // subtleDark: `linear-gradient(0deg, #000000 0%, #222222 100%)`,
-    // horizontalFade: `linear-gradient(90deg, #000000 0%, #111111 50%, #000000 100%)`,
     darkRadial: `radial-gradient(circle at 75% 65%, #888888 0%, #111111 30%, #222222 100%)`,
-    // diagonalDarkBand: `linear-gradient(45deg, #111111 0%, #000000 50%, #333333 100%)`,
-    // verticalAscent: `linear-gradient(180deg, #333333 0%, #111111 50%, #000000 100%)`,
     blackMetal: `linear-gradient(135deg, #111111 0%, #222222 20%, #ffffff 30%, #222222 40%, #111111 100%)`,
-    // subtleShine: `linear-gradient(135deg, #111111 0%, #1a1a1a 55%, #333333 65%, #999999 70%, #222222 80%, #111111 100%)`,
-    // abyss: `linear-gradient(0deg, #111111 0%, #333333 100%)`,
     charcoalFade: `linear-gradient(90deg, #1a1a1a 0%, #3a3a3a 50%, #1a1a1a 100%)`,
-    // shadowRealm: `radial-gradient(circle, #222222 0%, #444444 70%, #666666 100%)`,
-    // obsidianDepth: `linear-gradient(45deg, #1a1a1a 0%, #333333 50%, #4d4d4d 100%)`,
-    // twilightDescent: `linear-gradient(180deg, #444444 0%, #222222 50%, #111111 100%)`
   },
   white: {
     ivoryWash: `linear-gradient(90deg, #f8f8f0 0%, #fffafa 50%, #f8f8f0 100%)`,

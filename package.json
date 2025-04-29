@@ -9,7 +9,7 @@
     "dist"
   ],
   "scripts": {
-    "build": "tailwindcss -i ./src/main.css -o ./src/index.css --minify && rollup -c",
+    "build": "rollup -c",
     "test": "npm run build && yalc publish"
   },
   "author": "Jared Mullins",
