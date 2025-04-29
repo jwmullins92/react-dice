@@ -9,7 +9,7 @@
     "dist"
   ],
   "scripts": {
-    "build": "tailwindcss -i ./src/index.css -o ./dist/index.css --minify && rollup -c",
+    "build": "tailwindcss -i ./src/main.css -o ./src/index.css --minify && rollup -c",
     "test": "npm run build && yalc publish"
   },
   "author": "Jared Mullins",
@@ -25,6 +25,7 @@
     "@rollup/plugin-commonjs": "^28.0.3",
     "@rollup/plugin-node-resolve": "^16.0.1",
     "@rollup/plugin-typescript": "^12.1.2",
+    "@rollup/plugin-url": "^8.0.2",
     "@types/node": "^22.15.2",
     "@types/react": "^19.1.2",
     "@types/react-dom": "^19.1.2",
@@ -40,7 +41,6 @@
     "typescript": "^5.8.3"
   },
   "dependencies": {
-    "@rollup/plugin-url": "^8.0.2",
     "framer-motion": "^12.9.2"
   }
 }

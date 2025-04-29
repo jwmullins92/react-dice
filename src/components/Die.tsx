@@ -170,7 +170,6 @@ export const Die = forwardRef(
                         WebkitTextStroke: "1px rgba(30, 30, 30, 0.6)",
                         position: `relative`,
                         fontFamily: `'Rounded', sans-serif`, // Apply your bundled font here
-                        // textShadow: `-1px -1px 1px rgba(50, 50, 50, 0.8), 1px 1px 1px rgba(80, 80, 80, 0.3)`
                       }}
                     >
                       <span
