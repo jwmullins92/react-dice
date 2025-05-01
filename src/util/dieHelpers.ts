@@ -1,7 +1,6 @@
 import { CSSProperties } from "react";
 
 export type Theme = `light` | `dark` | `metallic`;
-
 const rotate = (axis: `X` | `Y`, degrees: number) =>
   `rotate${axis}(${degrees}deg)`;
 
@@ -26,7 +25,11 @@ export const gradients = {
   },
 };
 
-export const sides = [
+export const sides: {
+  sidePlacement: string;
+  show: { x: number; y: number };
+  pips?: number[];
+}[] = [
   {
     pips: [0, 1, 0],
     sidePlacement: ``,

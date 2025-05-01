@@ -7,12 +7,13 @@ import {
   useContext,
   useEffect,
   useImperativeHandle,
+  useRef,
   useState,
 } from "react";
 
 import { DiceContext } from "../context/DiceContext";
 import { Face } from "../types/types";
-import { diceThemes, gradients, sides, Theme } from "../util/dieHelpers";
+import { diceThemes, sides, Theme } from "../util/dieHelpers";
 import { getRandomDieValue, parseSizeToPixels } from "../util/functions";
 import { useKeyboardRoller } from "../util/hooks";
 
@@ -49,13 +50,25 @@ export const Die = forwardRef(
     },
     ref,
   ) => {
+    const sizeInPixels = parseSizeToPixels(size);
     const [value, setValue] = useState<Face>(initialValue ?? 1);
     const [rolling, setRolling] = useState(false);
     const [freeze, setFreeze] = useState(false);
+    const [containerSize, setContainerSize] = useState(sizeInPixels);
+    const containerRef = useRef(null);
     const { registerDie, unregisterDie } = useContext(DiceContext);
 
-    const dieTheme = diceThemes[theme];
+    useEffect(() => {
+      if (!containerRef.current) return;
 
+      const observer = new ResizeObserver(([entry]) =>
+        setContainerSize(entry!.contentRect.height),
+      );
+      observer.observe(containerRef.current);
+      return () => observer.disconnect();
+    }, []);
+
+    const dieTheme = diceThemes[theme];
     const toggleSave = () => setFreeze(!freeze);
     const controls = useAnimation();
     const roll = async (): Promise<Face> => {
@@ -96,15 +109,13 @@ export const Die = forwardRef(
 
     useImperativeHandle(ref, () => ({ roll, toggleSave }));
 
-    const translateZ =
-      parseSizeToPixels(size) /
-      (typeof size == `string` && size.includes(`%`) ? 4 : 2);
+    const translateZ = containerSize / 2;
     return (
       <div
+        ref={containerRef}
         style={{
           boxSizing: `border-box`,
           width: size,
-          height: size,
           aspectRatio: 1,
           ...containerStyle,
         }}
@@ -119,7 +130,6 @@ export const Die = forwardRef(
           style={{
             height: `100%`,
             width: `100%`,
-
             perspective: 1000,
             position: `relative`,
             display: `flex`,
@@ -134,6 +144,7 @@ export const Die = forwardRef(
               height: `100%`,
               width: `100%`,
               position: `relative`,
+              translateZ: -translateZ,
             }}
           >
             {sides.map(({ pips, sidePlacement }, i) => {
@@ -142,6 +153,7 @@ export const Die = forwardRef(
                   key={i}
                   style={{
                     transform: `${sidePlacement} translateZ(${rolling ? translateZ : value == i + 1 ? translateZ + 5 : translateZ * 0.8}px)`,
+                    transformOrigin: `center center center`,
                     display: `flex`,
                     flexDirection: `column`,
                     alignItems: `center`,
@@ -157,34 +169,7 @@ export const Die = forwardRef(
                     background: faceBackground ?? dieTheme.face?.background,
                   }}
                 >
-                  {useNumerals ? (
-                    <div
-                      style={{
-                        height: `100%`,
-                        width: `100%`,
-                        display: `flex`,
-                        alignItems: `center`,
-                        justifyContent: `center`,
-                        color: "rgba(0, 0, 0, 1)",
-                        fontSize: parseSizeToPixels(size) * 0.7,
-                        WebkitTextStroke: "1px rgba(30, 30, 30, 0.6)",
-                        position: `relative`,
-                        fontFamily: `'Rounded', sans-serif`,
-                      }}
-                    >
-                      <span
-                        style={{
-                          position: "relative",
-                          zIndex: 1,
-                          background: `linear-gradient(135deg, rgb(0, 0, 0), rgb(100, 100, 100))`,
-                          WebkitBackgroundClip: "text",
-                          color: "transparent",
-                        }}
-                      >
-                        {i + 1}
-                      </span>
-                    </div>
-                  ) : (
+                  {pips && !useNumerals ? (
                     pips.map((rowPips, i) => {
                       return (
                         <div
@@ -222,6 +207,33 @@ export const Die = forwardRef(
                         </div>
                       );
                     })
+                  ) : (
+                    <div
+                      style={{
+                        height: `100%`,
+                        width: `100%`,
+                        display: `flex`,
+                        alignItems: `center`,
+                        justifyContent: `center`,
+                        color: "rgba(0, 0, 0, 1)",
+                        fontSize: parseSizeToPixels(size) * 0.7,
+                        WebkitTextStroke: "1px rgba(30, 30, 30, 0.6)",
+                        position: `relative`,
+                        fontFamily: `'Rounded', sans-serif`, // Apply your bundled font here
+                      }}
+                    >
+                      <span
+                        style={{
+                          position: "relative",
+                          zIndex: 1 /* Ensure text is above pseudo-element */,
+                          background: `linear-gradient(135deg, rgb(0, 0, 0), rgb(100, 100, 100))`,
+                          WebkitBackgroundClip: "text",
+                          color: "transparent",
+                        }}
+                      >
+                        {i + 1}
+                      </span>
+                    </div>
                   )}
                   <AnimatePresence>
                     {freeze && (
