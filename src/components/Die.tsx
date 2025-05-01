@@ -115,7 +115,7 @@ export const Die = forwardRef(
         ref={containerRef}
         style={{
           boxSizing: `border-box`,
-          width: size,
+          width: containerSize,
           aspectRatio: 1,
           ...containerStyle,
         }}
