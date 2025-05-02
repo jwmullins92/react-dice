@@ -1,4 +1,4 @@
-# react-dice
+# react-dice-3d
 
 Customizable 3D dice with individual and group logic features
 
@@ -7,7 +7,7 @@ Customizable 3D dice with individual and group logic features
 Install with [npm](https://www.npmjs.com/get-npm):
 
 ```
-npm install react-dice
+npm install react-dice-3d
 ```
 
 ## Quick Start
@@ -15,7 +15,7 @@ npm install react-dice
 Wrap your `App` or section of your app with the `<DiceProvider>` component:
 
 ```tsx
-import { DiceProvider } from "react-dice";
+import { DiceProvider } from "react-dice-3d";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <DiceProvider>
@@ -73,7 +73,7 @@ You have multiple options for triggering a die roll:
 You can have programmatic access to a die via the `useDie()` hook by giving the die an id:
 
 ```tsx
-import {useDie} from "react-dice";
+import {useDie} from "react-dice-3d";
 
 const die = useDie("my-die");
 
@@ -121,7 +121,7 @@ The default behavior of clicking a die in a group is to freeze the result. If a 
 All you need to do is import the component and give it a `diceCount`
 
 ```tsx
-import { DiceGroup } from "react-dice";
+import { DiceGroup } from "react-dice-3d";
 
 <DiceGroup diceCount={3} useDefaultRoller />;
 ```
@@ -173,7 +173,7 @@ Like the `Die` component, you have several options for controlling the `DiceGrou
 You can have programmatic access to a dice group via the `useDiceGroup()` hook by giving the `DiceGroup` an id:
 
 ```tsx
-import {useDiceGroup} from "react-dice";
+import {useDiceGroup} from "react-dice-3d";
 
 const group = useDiceGroup(`my-group`);
 
