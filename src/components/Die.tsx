@@ -27,7 +27,7 @@ export const Die = forwardRef(
       containerStyle,
       keyboardListeners = [],
       onClick,
-      initialValue,
+      initialValue = 1,
       rollDuration = 1,
       theme = `light`,
       faceBackground,
@@ -51,7 +51,7 @@ export const Die = forwardRef(
     ref,
   ) => {
     const sizeInPixels = parseSizeToPixels(size);
-    const [value, setValue] = useState<Face>(initialValue ?? 1);
+    const [value, setValue] = useState<Face>(initialValue);
     const [rolling, setRolling] = useState(false);
     const [freeze, setFreeze] = useState(false);
     const [containerSize, setContainerSize] = useState(sizeInPixels);
@@ -114,10 +114,11 @@ export const Die = forwardRef(
       <div
         ref={containerRef}
         style={{
-          boxSizing: `border-box`,
-          width: containerSize,
-          aspectRatio: 1,
           ...containerStyle,
+          boxSizing: `border-box`,
+          aspectRatio: 1,
+          width: containerSize,
+          height: containerSize,
         }}
       >
         <div
