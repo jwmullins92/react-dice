@@ -100,7 +100,7 @@ export const DiceGroup = forwardRef(
     useKeyboardRoller(keyboardListeners, roll);
     useEffect(() => {
       if (!getGroup(id)) {
-        const { rollGroup, diceElements } = addGroup(id, dice);
+        const { roll: rollGroup, diceElements } = addGroup(id, dice);
         setDiceComponents(diceElements);
         roller.current = rollGroup;
       }
