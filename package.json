@@ -1,5 +1,5 @@
 {
-  "name": "react-dice",
+  "name": "react-dice-3d",
   "type": "module",
   "version": "1.0.0",
   "description": "Flexible dice and dice group components",
@@ -8,12 +8,21 @@
   "files": [
     "dist"
   ],
+  "module": "dist/bundle.js",
   "scripts": {
     "build": "rollup -c",
     "test": "npm run build && yalc publish"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jwmullins92/react-dice"
+  },
+  "bugs": {
+    "url": "https://github.com/jwmullins92/react-dice/issues"
+  },
+  "homepage": "https://github.com/jwmullins92/",
   "author": "Jared Mullins",
-  "license": "ISC",
+  "license": "MIT",
   "keywords": [
     "react",
     "dice",
@@ -21,6 +30,10 @@
     "roll",
     "die"
   ],
+  "peerDependencies": {
+    "react": "^18.0.0 || ^19.0.0",
+    "react-dom": "^18.0.0 || ^19.0.0"
+  },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^28.0.3",
     "@rollup/plugin-node-resolve": "^16.0.1",

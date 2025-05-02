@@ -24,6 +24,8 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
 );
 ```
 
+The <DiceProvider> component is required to manage the state and context for dice rolling throughout your app.
+
 Import the `Die` component.
 
 ```tsx
@@ -45,7 +47,7 @@ A single die. Rolls on click by default.
 | id                | string                             | -       | Used for accessing Die via hook                                                                                                                                   |
 | size              | string \| number                   | 50px    | Size of the die                                                                                                                                                   |
 | onRoll            | (value: number) => void            | -       | Function that receives the result of the die roll                                                                                                                 |
-| Roller            | (roll: () => void) => ReactElement | -       | Function that receives a `roll` function for functional control over die roll. Returns a react elemnt.                                                            |
+| Roller            | (roll: () => void) => ReactElement | -       | Function that receives a `roll` function for functional control over die roll. Returns a react element that you can use to trigger the roll (e.g., a button).     |
 | containerStyle    | React.CSSProperties                | -       | Style object for setting the style of the container that holds the die. Height/width will always be set by the `size` prop                                        |
 | keyboardListeners | string[]                           | -       | Accepts an array of keyboard buttons that will trigger a die roll                                                                                                 |
 | onClick           | (roll: () => void) => void         | -       | Function that receives a roll function. Used to add extra behavior during a click. By default clicking on a Die will roll it unless it is part of a `<DiceGroup>` |
@@ -126,20 +128,20 @@ import { DiceGroup } from "react-dice";
 
 #### Props
 
-| Prop                        | Type                                                | Default    | Description                                                                                                                                                |
-|:----------------------------|:----------------------------------------------------|:-----------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------|
-| id                          | string                                              | randomUUID | Provide an id for programmatic access to group                                                                                                             |
-| onRollGroup                 | (result: RollGroupResult) => void                   | -          | Function that receives the result of the group roll. The result is an object containing the `values`, `sum`, and `groupings` (see below for details)       |
-| rollDuration                | number                                              | 1          | Sets the time it takes to complete a roll in seconds                                                                                                       |
-| diceSize                    | string \| number                                    | -          | Sets the size of the dice in the group. A die is 50px by default                                                                                           |
-| diceCount                   | number                                              | 0          | Number of dice in the group                                                                                                                                |
-| children                    | ReactElement<DieProps> \| ReactElement<DieProps>[]; | -          | Children of the `DiceGroup` wrapper. These must be `Die` components. `DiceGroup` will throw out anything that is not a `Die` component                     |
-| Roller                      | (roll: () => void) => ReactElement                  | -          | Function that receives a `roll` function for functional control over dice group roll. Returns a react elemnt.                                              |
-| containerStyle              | React.CSSProperties                                 | -          | Style object for setting the style of the container that holds the group. Byt default the group is in a flexbox with a column gap of 25px                  |
-| diceAndRollerContainerStyle | React.CSSProperties                                 | -          | If you are using a Roller, this styles the container that both the group and roll component are in. By default it is a flexbox column with row gap of 10px |
-| keyboardListeners           | string[]                                            | -          | Accepts an array of keyboard buttons that will trigger a group roll                                                                                        |
-| theme                       | "light" \| "dark" \| "metallic"                     | "light"    | Applies default stylings to the dice in the group                                                                                                          |
-| useDefaultRoller            | boolean                                             | -          | Adds a roll button with default styling                                                                                                                    |
+| Prop                        | Type                                                | Default    | Description                                                                                                                                                          |
+|:----------------------------|:----------------------------------------------------|:-----------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| id                          | string                                              | randomUUID | Provide an id for programmatic access to group                                                                                                                       |
+| onRollGroup                 | (result: RollGroupResult) => void                   | -          | Function that receives the result of the group roll. The result is an object containing the `values`, `sum`, and `groupings` (see below for details)                 |
+| rollDuration                | number                                              | 1          | Sets the time it takes to complete a roll in seconds                                                                                                                 |
+| diceSize                    | string \| number                                    | -          | Sets the size of the dice in the group. A die is 50px by default                                                                                                     |
+| diceCount                   | number                                              | 0          | Number of dice in the group                                                                                                                                          |
+| children                    | ReactElement<DieProps> \| ReactElement<DieProps>[]; | -          | Children of the `DiceGroup` wrapper. These must be `Die` components. `DiceGroup` will throw out anything that is not a `Die` component                               |
+| Roller                      | (roll: () => void) => ReactElement                  | -          | Function that receives a `roll` function for functional control over dice group roll. Returns a react element that you can use to trigger the roll (e.g., a button). |
+| containerStyle              | React.CSSProperties                                 | -          | Style object for setting the style of the container that holds the group. Byt default the group is in a flexbox with a column gap of 25px                            |
+| diceAndRollerContainerStyle | React.CSSProperties                                 | -          | If you are using a Roller, this styles the container that both the group and roll component are in. By default it is a flexbox column with row gap of 10px           |
+| keyboardListeners           | string[]                                            | -          | Accepts an array of keyboard buttons that will trigger a group roll                                                                                                  |
+| theme                       | "light" \| "dark" \| "metallic"                     | "light"    | Applies default stylings to the dice in the group                                                                                                                    |
+| useDefaultRoller            | boolean                                             | -          | Adds a roll button with default styling                                                                                                                              |
 
 ##### RollGroupResult:
 
