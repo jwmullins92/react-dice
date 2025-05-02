@@ -8,7 +8,7 @@ export type RollGroupResult = {
   sum: number;
   groupings: Partial<Record<Face, number>>;
 };
-export type DieHandle = { roll: () => Promise<Face>; toggleSave: () => void };
+export type DieHandle = { roll: () => Promise<Face>; toggleFreeze: () => void };
 export type DieController = { id: string } & DieHandle;
 export type DiceGroup = DiceGroupsContextType[`groupRollers`][string];
 export type DieProps = ComponentProps<typeof Die>;

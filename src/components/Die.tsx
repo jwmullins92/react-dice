@@ -69,7 +69,7 @@ export const Die = forwardRef(
     }, []);
 
     const dieTheme = diceThemes[theme];
-    const toggleSave = () => setFreeze(!freeze);
+    const toggleFreeze = () => setFreeze(!freeze);
     const controls = useAnimation();
     const roll = async (): Promise<Face> => {
       if (freeze || rolling) return value;
@@ -102,12 +102,12 @@ export const Die = forwardRef(
 
     useEffect(() => {
       if (id) {
-        registerDie({ id, roll, toggleSave });
+        registerDie({ id, roll, toggleFreeze });
         return () => unregisterDie(id);
       }
     }, [id, freeze]);
 
-    useImperativeHandle(ref, () => ({ roll, toggleSave }));
+    useImperativeHandle(ref, () => ({ roll, toggleFreeze }));
 
     const translateZ = containerSize / 2;
     return (

@@ -22,11 +22,11 @@ type DieProps = ComponentProps<typeof Die>;
 export const DiceGroup = forwardRef(
   (
     {
+      id = crypto.randomUUID(),
       diceCount = 0,
-      diceSize = `50px`,
+      diceSize,
       containerStyle,
       diceAndRollerContainerStyle,
-      groupId,
       children,
       Roller,
       onRollGroup,
@@ -34,11 +34,11 @@ export const DiceGroup = forwardRef(
       rollDuration,
       theme = `light`,
     }: {
+      id?: string;
       diceCount?: number;
       containerStyle?: CSSProperties;
       diceAndRollerContainerStyle?: CSSProperties;
       diceSize?: Property.Width<string | number>;
-      groupId: string;
       children?: ReactElement<DieProps> | ReactElement<DieProps>[];
       Roller?: (roll: () => void) => ReactElement;
       onRollGroup?: (result: RollGroupResult) => void;
@@ -97,12 +97,12 @@ export const DiceGroup = forwardRef(
     useImperativeHandle(ref, () => ({ rollGroup: roller.current }));
     useKeyboardRoller(keyboardListeners, roll);
     useEffect(() => {
-      if (!getGroup(groupId)) {
-        const { rollGroup, diceElements } = addGroup(groupId, dice);
+      if (!getGroup(id)) {
+        const { rollGroup, diceElements } = addGroup(id, dice);
         setDiceComponents(diceElements);
         roller.current = rollGroup;
       }
-    }, [groupId, diceCount, dice]);
+    }, [id, diceCount, dice]);
 
     return (
       <div

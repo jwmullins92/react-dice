@@ -39,7 +39,7 @@ export const DiceProvider = ({ children }: { children: ReactNode }) => {
       const ref = createRef<DieHandle>();
       dieRefs.push(ref);
       return cloneElement(die, {
-        onClick: () => ref.current?.toggleSave(),
+        onClick: () => ref.current?.toggleFreeze(),
         ...die.props,
         key: i,
         ref,
