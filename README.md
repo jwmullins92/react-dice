@@ -52,8 +52,8 @@ You have multiple options for triggering a die roll:
 
 ##### via props
 
-- `keyboardListeners` allow you to roll die via keypress
-- `Roller` allows gives you a programmatic roll function and returns an element to act as a roll controller.
+- `keyboardListeners` roll die via keypress
+- `Roller` gives you a programmatic roll function and returns an element to act as a roll controller.
 - `onClick` allows you to augment the default behavior of the click roll by giving you the roll function to call after you implement your logic.
 
 ##### via hook
@@ -61,13 +61,13 @@ You have multiple options for triggering a die roll:
 You can have programmatic access to a die via the `useDie()` hook by giving the die an id:
 
 ```tsx
-<Die id="my-die" />
-```
-
-```tsx
 import {useDie} from "./hooks";
 
 const die = useDie("my-die")
+```
+
+```tsx
+<Die id="my-die" />
 ```
 
 `useDie()` returns two functions:
@@ -89,7 +89,7 @@ const dieRef = useRef(null)
 
 ```tsx
 <Die ref={dieRef} />
-<button onClick={() => die.current.roll()} >Ref Roll</button>
+<button onClick={() => die.current.roll()}>Ref Roll</button>
 ```
 
 You get the same functions that you get from the `useDie()` hook:
