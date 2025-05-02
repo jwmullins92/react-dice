@@ -13,7 +13,7 @@ export const parseSizeToPixels = (
 
   temp.style.position = "absolute";
   temp.style.visibility = "hidden";
-  temp.style.width = `${size}${/^d+$/.test(size) ? `` : `px`}`;
+  temp.style.width = `${size}${/^d+$/.test(size) ? `px` : ``}`;
 
   (referenceEl || document.body).appendChild(temp);
 

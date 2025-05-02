@@ -33,6 +33,7 @@ export const DiceGroup = forwardRef(
       keyboardListeners = [],
       rollDuration,
       theme = `light`,
+      useDefaultRoller,
     }: {
       id?: string;
       diceCount?: number;
@@ -45,6 +46,7 @@ export const DiceGroup = forwardRef(
       keyboardListeners?: string[];
       rollDuration?: number;
       theme?: Theme;
+      useDefaultRoller?: boolean;
     },
     ref,
   ) => {
@@ -108,8 +110,9 @@ export const DiceGroup = forwardRef(
       <div
         style={{
           display: `flex`,
+          alignItems: `center`,
           flexDirection: `column`,
-          rowGap: 10,
+          rowGap: 20,
           ...diceAndRollerContainerStyle,
         }}
       >
@@ -124,7 +127,24 @@ export const DiceGroup = forwardRef(
             return die;
           })}
         </div>
-        {Roller && Roller(roll)}
+        {useDefaultRoller ? (
+          <button
+            onClick={roll}
+            style={{
+              padding: 5,
+              background: "cornflowerblue",
+              color: "white",
+              fontSize: 20,
+              fontWeight: `bolder`,
+              width: `calc(${diceSize} * 1.5)`,
+              borderRadius: `2px`,
+            }}
+          >
+            Roll
+          </button>
+        ) : (
+          Roller && Roller(roll)
+        )}
       </div>
     );
   },

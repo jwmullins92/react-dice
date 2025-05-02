@@ -114,11 +114,12 @@ export const Die = forwardRef(
       <div
         ref={containerRef}
         style={{
-          ...containerStyle,
           boxSizing: `border-box`,
-          aspectRatio: 1,
           width: containerSize,
           height: containerSize,
+          aspectRatio: 1,
+          position: `relative`,
+          ...containerStyle,
         }}
       >
         <div

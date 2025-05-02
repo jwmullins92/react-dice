@@ -14,12 +14,12 @@ export type DiceGroup = DiceGroupsContextType[`groupRollers`][string];
 export type DieProps = ComponentProps<typeof Die>;
 
 export type DiceGroupsContextType = {
-  groupRollers: Record<string, { rollGroup: () => void }>;
+  groupRollers: Record<string, { roll: () => void }>;
   addGroup: (
     groupId: string,
     dice: ReactElement<DieProps>[],
   ) => {
-    rollGroup: () => Promise<RollGroupResult>;
+    roll: () => Promise<RollGroupResult>;
     diceElements: ReactElement<DieProps>[];
   };
   getGroup: (groupId: string) => DiceGroup | undefined;
@@ -31,7 +31,7 @@ export const DiceContext = createContext<DiceGroupsContextType>({
   groupRollers: {},
   addGroup: () => ({
     diceElements: [],
-    rollGroup: async () => ({ values: [], sum: 0, groupings: {} }),
+    roll: async () => ({ values: [], sum: 0, groupings: {} }),
   }),
   getGroup: () => undefined,
   registerDie: () => {},

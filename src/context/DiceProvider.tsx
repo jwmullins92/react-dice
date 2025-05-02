@@ -62,9 +62,9 @@ export const DiceProvider = ({ children }: { children: ReactNode }) => {
     };
     setGroups((oldGroups) => ({
       ...oldGroups,
-      [groupId]: { rollGroup },
+      [groupId]: { roll: rollGroup },
     }));
-    return { diceElements, rollGroup };
+    return { diceElements, roll: rollGroup };
   };
 
   return (

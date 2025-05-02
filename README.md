@@ -15,21 +15,21 @@ npm install react-dice
 Wrap your `App` or section of your app with the `<DiceProvider>` component:
 
 ```tsx
-import {DiceProvider} from "react-dice";
+import { DiceProvider } from "react-dice";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
-    <DiceProvider>
-        <App/>
-    </DiceProvider>
+  <DiceProvider>
+    <App />
+  </DiceProvider>,
 );
 ```
 
 Import the `Die` component.
 
 ```tsx
-import {Die} from "./Die";
+import { Die } from "./Die";
 
-<Die onRoll={(value) => console.log(value)} />
+<Die onRoll={(value) => console.log(value)} />;
 ```
 
 ## Usage
@@ -41,7 +41,7 @@ A single die. Rolls on click by default.
 #### Props
 
 | Prop              | Type                               | Default | Description                                                                                                                                                       |
-|:------------------|:-----------------------------------|:--------|:------------------------------------------------------------------------------------------------------------------------------------------------------------------|  
+|:------------------|:-----------------------------------|:--------|:------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | id                | string                             | -       | Used for accessing Die via hook                                                                                                                                   |
 | size              | string \| number                   | 50px    | Size of the die                                                                                                                                                   |
 | onRoll            | (value: number) => void            | -       | Function that receives the result of the die roll                                                                                                                 |
@@ -119,9 +119,9 @@ The default behavior of clicking a die in a group is to freeze the result. If a 
 All you need to do is import the component and give it a `diceCount`
 
 ```tsx
-import {DiceGroup} from "react-dice";
+import { DiceGroup } from "react-dice";
 
-<DiceGroup diceCount={3} useDefaultRoller />
+<DiceGroup diceCount={3} useDefaultRoller />;
 ```
 
 #### Props
@@ -142,6 +142,7 @@ import {DiceGroup} from "react-dice";
 | useDefaultRoller            | boolean                                             | -          | Adds a roll button with default styling                                                                                                                    |
 
 ##### RollGroupResult:
+
 ```typescript
 {
     values: number[];
@@ -153,7 +154,7 @@ import {DiceGroup} from "react-dice";
 - `values` is an array of the individual die values
 - `sum` is the sum of all values
 - `groupings` is an object whose keys are the result of a roll the value is how many times that result appears.
-  - Ex. a roll of 5, 5, 4, 3, 3 would give you a grouping of: 
+  - Ex. a roll of 5, 5, 4, 3, 3 would give you a grouping of:
     - `{ 3: 2, 4: 1, 5: 2}`
 
 #### Controlling the `DiceGroup`
@@ -181,7 +182,7 @@ const group = useDiceGroup(`my-group`);
 ##### via ref
 
 ```tsx
-const diceGroupRef = useRef(null)
+const diceGroupRef = useRef(null);
 ```
 
 ```tsx
@@ -216,5 +217,6 @@ const thirdDie = useDie("third-die");
 You can use props to apply to all dice in a group and control/style individual die this way while still maintaining the group rolling/result logic.
 
 Notes about `GroupDice`:
+
 - The default behavior of clicking a group die is to freeze it. You can freeze programmatically as shown above as well.
 - You can use a combination of the wrapper and `Die` components and `diceCount` prop. `diceCount` should be the total number of dice you want. If you do not have enough `Die` children, it will fill in with default `Die` components respecting the props of `DiceGroup`
